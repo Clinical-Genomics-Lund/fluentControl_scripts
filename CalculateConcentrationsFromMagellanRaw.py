@@ -83,7 +83,7 @@ def main():
 
 		# Write new standard curve
 		with open(storedStdCurve, 'w') as file:
-			file.write('%f, %d\n%s\n' % (transformationFactor, blank, x))
+			file.write('%s\n%f, %d\n%s\n' % (date, transformationFactor, blank, x))
 
 		with open(storedStdCurveBackUp, 'a') as file:
 			file.write('%s\n%f, %d\n%s\n' % (date, transformationFactor, blank, x))
@@ -107,11 +107,13 @@ def main():
 		plt.xlabel('Raw data')
 		plt.ylabel('Concentration [ng/ul]')
 		plt.savefig('C:\\Tecan\\Variables\\%sStdCurve.png' % kit)
+		plt.savefig('C:\\Tecan\\Variables\\StdCurves\\%sStdCurve-%s.png' % (kit, date))
 		plt.close()
 
 	elif stdCurve == 'Yes':
 		#read in slope and blank
 		with open(storedStdCurve, 'r') as file:
+			next(file)
 			line = next(file).strip().split(',')
 			transformationFactor = float(line[0])
 			blank = int(line[1])
@@ -159,7 +161,7 @@ def main():
 
 	# Make figure with colored grid
 	fig, ax = plt.subplots(figsize=(9,6))
- 	ax.imshow(z)
+	ax.imshow(z)
 
 	# Write concentration values grid
 	for val in range(0,96):
@@ -186,6 +188,7 @@ def main():
 
 	ax.xaxis.tick_top()
 	plt.savefig('C:\\Tecan\\Variables\\concGrid.png')
+	plt.savefig('C:\\Tecan\\Variables\\ConcGrids\\concGrid-%s.png' % date)
 	plt.close()
 
 if __name__ == "__main__":
