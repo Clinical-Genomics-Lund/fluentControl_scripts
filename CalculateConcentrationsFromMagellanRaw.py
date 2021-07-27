@@ -75,11 +75,18 @@ def main():
 
 		xAvg = statistics.mean(x)
 		yAvg = statistics.mean(standards)
-		xySum = sum([(x - xAvg)*(y - yAvg) for x,y in  zip(x, standards)])
+		xySum = sum([(x - xAvg)*(y - yAvg) for x,y in zip(x, standards)])
 		xxSum = sum([(x - xAvg)*(x - xAvg) for x in x])
 
 		transformationFactor = xySum/xxSum
 		blank = rawData[0]
+		
+		# Get concentration for standards
+		y = [a*transformationFactor for a in x]
+		# Find 
+		SSres = sum([(f-y)*(f-y) for f,y in zip(standards,y)])
+		R2 = 1 - SSres/xxSum
+		print(R2)
 
 		# Write new standard curve
 		with open(storedStdCurve, 'w') as file:
