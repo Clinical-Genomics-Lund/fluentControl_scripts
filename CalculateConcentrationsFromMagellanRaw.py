@@ -110,8 +110,8 @@ def main():
 					stdCurvePNGpath = stdFailedPath
 					sys.exit("Error: Failed to read raw data")
 
-				file.write('\"%s\";%f;%d;\"%s\";\"%s\";%f' % (stdDate, transformationFactor, blank, x, stdCurvePNGpath, R2))
-				backupFile.write('\n\"%s\";%f;%d;\"%s\";\"%s\";%f' % (stdDate, transformationFactor, blank, x, stdCurvePNGpath, R2))
+				file.write('\"%s\";%f;%d;%s;\"%s\";%f' % (stdDate, transformationFactor, blank, x, stdCurvePNGpath, R2))
+				backupFile.write('\n\"%s\";%f;%d;%s;\"%s\";%f' % (stdDate, transformationFactor, blank, x, stdCurvePNGpath, R2))
 
 		# Set dilution for standards to one
 		dilutionFactors[0] = 1
@@ -139,10 +139,11 @@ def main():
 		with open(storedStdCurve, 'r') as file:
 			lines = file.readlines()
 			line2 = lines[1].split(';')
-			stdDate = line2[0]
+			stdDate = line2[0].strip('\"')
 			transformationFactor = float(line2[1])
 			blank = int(line2[2])
-			R2 = float(line2[3])
+			R2 = float(line2[5])
+			stdCurvePNGpath = line2[4].strip('\"')
 
 	else:
 		concPath = concFailedPath
@@ -221,7 +222,7 @@ def main():
 			argsLines[1].append(args[head])
 
 		pathfile.write(';'.join(argsLines[0][0:5]) + ';ConcentrationPNG;stdCurvePNG\n')
-		pathfile.write('\"' + '\";\"'.join(argsLines[1][0:5]) + '";\"%s\";\"%s\"' % (concPath,stdCurvePNGpath))
+		pathfile.write('\"' + '\";\"'.join(argsLines[1][0:5]) + '\";\"%s\";\"%s\"' % (concPath,stdCurvePNGpath))
 
 	print('Done!')
 
