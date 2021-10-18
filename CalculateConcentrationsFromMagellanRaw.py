@@ -24,6 +24,8 @@ def main():
     global args
     args = {}
 
+    date = str(datetime.now().strftime("%Y%m%d-%H%M%S"))
+
     if len(sys.argv) == 1:
         quantArgs = 'C:\\Tecan\\Variables\\QuantITargs.txt'
         ascPath = 'C:\\Users\\Public\\Documents\\Tecan\\Magellan\\asc\\*'
@@ -57,7 +59,7 @@ def main():
             if o == '-k':
                 args[ "QuantITkit" ] = p
             elif o == '-c':
-                args[ "stdCurve" ] = p
+                args[ "OldStdCurve" ] = p
             elif o == '-u':
                 args[ "CurrentUserInput" ] = p
             elif o == '-n':
@@ -69,8 +71,6 @@ def main():
 
         concFailedPath = ''
         stdFailedPath = ''
-
-    date = str(datetime.now().strftime("%Y%m%d-%H%M%S"))
 
     # Read in data
     position = []
@@ -100,7 +100,7 @@ def main():
                 method = next(file).strip()
 
     # Calculate std. curve or read in old
-    if args['stdCurve'] == 'No': # Calculate new standard curve
+    if args['OldStdCurve'] == 'No': # Calculate new standard curve
         stdDate = date
 
         if args['QuantITkit'] == 'HighSensitivity':
@@ -168,7 +168,7 @@ def main():
         except:
             print('No figure')
 
-    elif args['stdCurve'] == 'Yes':
+    elif args['OldStdCurve'] == 'Yes':
         #read in slope and blank
         with open(storedStdCurve, 'r') as file:
             lines = file.readlines()
@@ -197,7 +197,7 @@ def main():
 
             outFile.write('%s,%s,%d,%f\n' % (position[well], dilutionFactors[well], rawData[well], concData[well]))
 
-        outFile.write('\nMethod: %s\nKit: %s\nOld standard curve: %s\nStandard Curve Calculation Date: %s\n' % (method, args['QuantITkit'], args['stdCurve'], stdDate))
+        outFile.write('\nMethod: %s\nKit: %s\nOld standard curve: %s\nStandard Curve Calculation Date: %s\n' % (method, args['QuantITkit'], args['OldStdCurve'], stdDate))
         outFile.write('transformationFactor: %f\nBlank: %d\nR2: %f\n\n' % (transformationFactor, blank, R2))
         outFile.write('Workflow: %s\nUser: %s\nNumber of Samples: %s\n' % (args['Workflow'], args['CurrentUserInput'], args['NumberOfSamples']))
         outFile.write('%s\nDate and time of calculations: %s\n' % (magellanDate, date))
@@ -261,4 +261,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
